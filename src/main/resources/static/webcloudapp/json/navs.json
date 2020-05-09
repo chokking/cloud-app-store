@@ -1,0 +1,24 @@
+{
+  "contentManagement": [
+    {
+      "title": "用户管理",
+      "icon": "&#xe634;",
+      "href": "page/user/userList.html",
+      "spread": false
+    },
+    {
+      "title": "评论管理",
+      "icon": "&#xe634;",
+      "href": "page/comment/commentList.html",
+      "spread": false
+    },
+    {
+      "title": "在线IDE",
+      "icon": "&#xe634;",
+      "href": "http://127.0.0.1:8080/ide.html",
+      "spread": false
+    }
+  ]
+}
+
+

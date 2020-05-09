@@ -1,0 +1,222 @@
+<!-- 即时通讯训练项目,登录页 -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link rel="stylesheet" href="frozen.css">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width = device-width,initial-scale = 1.0, maximum-scale = 1.0, user-scalable = 0"/>
+    <style type="text/css">
+        * {
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        body {
+            overflow-y: hidden;
+            overflow-x: hidden;
+        }
+
+        #app {
+            width: 100%;
+            height: 600px;
+            background: -webkit-linear-gradient(left top, white, #224);
+        }
+
+        .user_input_sec {
+            width: 100%;
+            /*top:250px;*/
+            height: 150px;
+            position: absolute;
+        }
+
+        .user_input_sec > .username_box {
+            position: absolute;
+            left: 50%;
+            width: 70%;
+            margin-left: -35%;
+            height: 30px;
+            border-radius: 5px;
+            background-color: #888;
+            border: 1px solid #fff;
+            -webkit-box-shadow: 10px 10px 10px rgba(0, 0, 0, .5);
+        }
+
+        .user_input_sec > .username_box > .username_input {
+            width: 100%;
+            /* background-color: #888; */
+            border: 0;
+            height: 30px;
+            text-align: center;
+        }
+
+        .user_input_sec > .password_box {
+            position: absolute;
+            top: 40px;
+            left: 50%;
+            width: 70%;
+            margin-left: -35%;
+            height: 30px;
+            border-radius: 5px;
+            background-color: #888;
+            border: 1px solid #fff;
+            -webkit-box-shadow: 10px 10px 10px rgba(0, 0, 0, .5);
+        }
+
+        .user_input_sec > .password_box > .password_input {
+            width: 100%;
+            /* background-color: #888; */
+            border: 0;
+            height: 30px;
+            text-align: center;
+        }
+
+        .user_input_sec > .submit_box {
+            position: absolute;
+            top: 80px;
+            left: 50%;
+            width: 70%;
+            margin-left: -35%;
+            height: 30px;
+            border-radius: 5px;
+            background-color: #888;
+            border: 1px solid #fff;
+
+        }
+
+        .user_input_sec > .submit_box > .submit_input {
+            width: 100%;
+            background-color: #224;
+            border: 0;
+            height: 30px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .user_input_sec > .submit_box > .submit_input:active {
+            width: 100%;
+            background-color: #112;
+            border: 0;
+            height: 30px;
+            text-align: center;
+            color: #fff;
+        }
+
+        .bot_text {
+            position: absolute;
+            color: #eee;
+            width: 100%;
+            text-align: center;
+            top: 130px;
+            font-size: 14px;
+
+        }
+
+        .userimg {
+            position: absolute;
+            left: 50%;
+            border-radius: 50%;
+            -webkit-box-shadow: 10px 10px 10px rgba(0, 0, 0, .5);
+        }
+    </style>
+</head>
+<body>
+
+<div id="app" :style="appstyle">
+    <h1>{{onlode()}}</h1>
+
+    <img class="userimg" :src="imgsrc" :style="imgstyle">
+    <section class="user_input_sec" :style="secstyle">
+
+        <div class="username_box">
+            <input class="username_input" type="text" name="" placeholder="邮箱/手机号" v-model="userinfo.username">
+        </div>
+        <div class="password_box">
+            <input class="password_input" type="password" name="" placeholder="请输入密码" v-model="userinfo.password">
+        </div>
+        <div class="submit_box">
+            <input class="submit_input" type="submit" name="" value="登录" @click="login()" :style="loginbutstyle">
+        </div>
+
+        <div class="bot_text" style="height: 100px;">
+            <a href="forget.html" style="text-decoration: none;color: white;">忘记密码?</a>&nbsp;&nbsp;&nbsp;
+            <a href="register.html" style="text-decoration: none;color: white;">注册</a>
+        </div>
+    </section>
+</div>
+
+
+</body>
+</html>
+<script type="text/javascript" src="js/vue.min.js"></script>
+<script src="js/common.js"></script>
+<script src="js/mui.js"></script>
+<script src="js/jquery-2.1.1.min.js"></script>
+<script type="text/javascript">
+    mui.init()
+</script>
+<script type="text/javascript">
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            appstyle: 'height:500px;',
+            scrheight: 0,
+            secstyle: '',
+            imgstyle: '',
+            loginbutstyle: '',
+            userinfo: [{
+                username: '',
+            },
+                {
+                    password: '',
+                }
+
+            ],
+            imgsrc: 'images/timg.jpg',
+        },
+        methods: {
+            onlode: function () {
+                if (this.scrheight == 0) //防止弹出键盘改变尺寸
+                {
+                    this.scrheight = document.documentElement.clientHeight;
+                }
+
+                this.appstyle = 'height:' + this.scrheight + "px;";
+                this.secstyle = 'top:' + this.scrheight / 3 + "px;";
+                this.imgstyle = 'top:' + this.scrheight / 18 + "px;" + 'width:' + this.scrheight / 5 + "px;" + 'height:' + this.scrheight /
+                    5 + "px;" + 'margin-left:-' + this.scrheight / 10 + "px;";
+            },
+            login: function () {
+                let _this = this
+                if (!_this.userinfo.username) {
+                    alert("账号不能为空")
+                    return
+                }
+                if (!_this.userinfo.password) {
+                    alert("密码不能为空")
+                    return
+                }
+                if (app.checkMobile(_this.userinfo.username)) {
+                    $.post(app.serverUrl + '/user/login', {
+                        username: _this.userinfo.username,
+                        password: _this.userinfo.password
+                    }, function (data) {
+                        console.log(data)
+                        if (data.code == 0) {
+                            app.setData("user", JSON.stringify(data.data))
+                            setTimeout(function () {
+                                window.location.href = "front.html"
+                            }, 1000)
+                            // localStorage.setItem("user", JSON.stringify(data.data))
+                        } else {
+                            alert(data.msg)
+                        }
+                    })
+                }
+
+            }
+        }
+
+    })
+</script>

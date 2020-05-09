@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>前台首页</title>
+    <link rel="stylesheet" href="css/animate.css">
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .container {
+            padding: 5px;
+        }
+
+        .container .img img {
+            width: 100%;
+        }
+
+        .m-tab {
+            position: relative;
+            padding: 0.40rem 0 0;
+            width: 100%;
+            background: #fff;
+            margin-bottom: 0.25rem;
+        }
+
+        .m-tab a {
+            position: absolute;
+            display: inline-block;
+            width: 50%;
+            font-size: 0.45rem;
+            color: #2C2C2C;
+            letter-spacing: 0;
+            line-height: 0.45rem;
+            text-align: center;
+            text-decoration: none;
+            padding-bottom: 0.1rem;
+        }
+
+        .m-tab a:first-child {
+            top: 0;
+            left: 0;
+        }
+
+        .m-tab a.m-coupons {
+            top: 0;
+            right: 0;
+        }
+
+        .m-tab a.active {
+            border-bottom: 2px solid #ff0082;
+            color: #ff0082;
+        }
+
+        .m-view1 {
+            background: #fff;
+            height: 200px;
+        }
+
+        .m-view2 {
+            background: #fff;
+            height: 200px;
+        }
+
+        @media screen and (min-width: 360px) {
+            html {
+                font-size: 100px !important;
+            }
+        }
+
+        .m-view .app .item {
+            display: flex;
+            height: 1.8rem;
+            margin-bottom: 15px;
+            border-bottom: solid 1px darkslateblue;
+            padding: 5px 0px;
+        }
+
+        .m-view .app .item .left {
+            width: 30%;
+        }
+
+        .m-view .app .item .left img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .m-view .app .item .center {
+            width: 40%;
+        }
+
+        .m-view .app .item .center p {
+            font-size: 0.35rem;
+            padding-left: 0.3rem;
+            height: 33.33333%;
+            padding-top: 5px;
+        }
+
+        .m-view .app .item .center .author,
+        .m-view .app .item .center .time {
+            font-size: 0.30rem;
+        }
+
+        .m-view .app .item .right {
+            width: 30%;
+            justify-content: center;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .m-view .app .item .right p a {
+            text-decoration: none;
+            color: green;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <div class="img animated rotateInDownRight" style="position: relative;">
+        <img :src="imgUrl" alt="">
+        <p v-if="!username"
+           style="font-size: 0.45rem;position: absolute;top: 40%;color: #ff0082;width: 100%;text-align: center;">
+            <span @click="goLogin()">登陆/</span><span @click="goRegister()">注册</span>
+        </p>
+        <p v-if="username"
+           style="font-size: 0.45rem;position: absolute;top: 40%;color: #ff0082;width: 100%;text-align: center;">
+            <span>{{username}}</span>
+            <br>
+            <a href="#" @click="logout()" style="text-decoration: none;font-size: 0.35rem;color: #ff0082">注销</a>
+        </p>
+    </div>
+
+    <div class="m-tab">
+        <a href="javascript:void(0);" id="m-my-invite" class="active">云应用</a>
+        <a href="javascript:void(0);" id="m-my-coupons" class="m-coupons">排行榜</a>
+        <div class="m-division"></div>
+    </div>
+    <div id="m-view1" class="m-view1 m-view animated bounceInLeft">
+        <div class="app ">
+            <div class="item" v-for="(item,index) in list" @click.stop="openDetail(item.id)" :key="index">
+                <div class="left ">
+                    <img :src="getImgUrl(item)" alt="">
+                </div>
+                <div class="center ">
+                    <p class="title" style="font-weight: bolder">{{item.name}}</p>
+                    <p class="author">{{item.author}}</p>
+                    <p class="time">{{item.time}}</p>
+                </div>
+                <div class="right ">
+                    <p style="font-size: 0.25rem;text-align: center;"><a href="#" @click.stop="tiyan(item)">体验云应用</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="m-view2" class="m-view2 m-view animated bounceInRight" style="display: none;">
+        <div class="app ">
+            <div class="item" v-for="(item,index) in list1" :key="index" @click.stop="openDetail(item.id)">
+                <div class="left">
+                    <img :src="getImgUrl(item)" alt="">
+                </div>
+                <div class="center">
+                    <p class="title" style="font-weight: bolder">{{item.name}}</p>
+                    <p class="author">{{item.author}}</p>
+                    <p class="time">{{item.time}}</p>
+                </div>
+                <div class="right">
+                    <p style="font-size: 0.25rem;text-align: center;">
+                        <a href="" v-if="index==0||index==1||index==2" style="color: red">第{{index+1}}名&nbsp;&nbsp;共{{item.total}}次</a>
+                        <a href="" v-else style="">第{{index+1}}名&nbsp;&nbsp;共{{item.total}}次</a></a>
+
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/jquery-2.1.1.min.js"></script>
+<script src="js/vue.min.js"></script>
+<script src="js/common.js"></script>
+<script type="text/javascript">
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            list: [],
+            list1: [],
+            imgUrl: "images/timg.jpg",
+            username: ''
+        },
+        mounted() {
+            let _this = this
+            let user = app.getData("user")
+            if (!user) {
+                window.location.href = "login1.html"
+            } else {
+                _this.username = JSON.parse(user).username
+            }
+        },
+        created() {
+            this.loadData()
+        },
+        methods: {
+            getImgUrl(item) {
+                let url = app.serverUrl + "/" + item.image
+                return url;
+            },
+            logout() {
+                localStorage.clear()
+                window.location.reload()
+            },
+            loadData() {
+                let _this = this
+                $.get(app.serverUrl + "/app/getInfoListPage", {
+                    page: 1,
+                    limit: 10000
+                }, function (res) {
+                    _this.list = res.data
+                })
+
+                $.get(app.serverUrl + "/app/getPhPage", {
+                    page: 1,
+                    limit: 10000
+                }, function (res) {
+                    _this.list1 = res.data
+                })
+            },
+            openDetail(id) {
+                window.location.href = "frontDetail.html?id=" + id
+            },
+            goLogin() {
+                window.location.href = "login1.html"
+            },
+            goRegister() {
+                window.location.href = "register.html"
+            },
+            tiyan(item) {
+                $.get(app.serverUrl + "/app/setCount", {id: item.id}, function (res) {
+                    // window.location.reload()
+                    window.location.href = item.url
+                })
+            }
+        }
+    })
+</script>
+
+<script type="text/javascript">
+    $('#m-return').on('click', function () {
+        window.history.back()
+    });
+    var myCoupons = $('#m-my-coupons');
+    var myInvite = $('#m-my-invite');
+    var view1 = $('#m-view1');
+    var view2 = $('#m-view2');
+    $('#m-return').on('click', function () {
+        window.history.back()
+    });
+    myInvite.on('click', function () {
+        myCoupons.removeClass('active');
+        myInvite.addClass('active');
+        view2.hide();
+        view1.show();
+    });
+    myCoupons.on('click', function () {
+        myInvite.removeClass('active');
+        myCoupons.addClass('active');
+        view1.hide();
+        view2.show();
+    });
+</script>
+</body>
+</html>

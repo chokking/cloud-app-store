@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>前台首页</title>
+    <link rel="stylesheet" href="css/animate.css">
+    <style>
+        * {
+            margin: 0px;
+            padding: 0px;
+        }
+
+        .container {
+            padding: 5px;
+        }
+
+        .container .img img {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="container" id="app">
+    <div class="img animated rotateInDownLeft" style="position: relative;">
+        <img :src="imgUrl" alt="">
+        <p v-if="!username"
+           style="font-size: 40px;position: absolute;top: 40%;color: #ff0082;width: 100%;text-align: center;">
+            <span @click="goLogin()">登陆/</span><span @click="goRegister()">注册</span>
+        </p>
+        <p v-if="username"
+           style="font-size: 40px;position: absolute;top: 40%;color: #ff0082;width: 100%;text-align: center;">
+            <span>{{username}}</span>
+            <br>
+            <a href="#" @click="logout()" style="text-decoration: none;font-size: 30px;color: #ff0082">注销</a>
+        </p>
+    </div>
+    <div class="comment">
+        <div class="top" style="display: flex;color: #ff0082">
+            <p style="font-size: 30px;padding: 15px 25px;width: 80%;font-weight: bold;"><span class="user">热门评论</span>
+            </p>
+            <p @click="openComment()"
+               style="font-size: 30px;padding: 15px 25px;width: 20%;text-align: right;font-weight: bold;"><span
+                    class="user">发表评论</span>
+            </p>
+        </div>
+
+        <div class="item">
+            <div class="animated bounceInLeft" style="line-height: 45px;margin-bottom: 20px;
+            border-radius: 50px;border: solid 1px #E6E6E6;padding: 15px 20px;font-size: 25px;"
+                 v-for="item in list">
+                <p style="font-weight: bolder;">{{item.username}}发表于{{item.time}}</p>
+                <span class="content">
+                    {{item.content}}
+                </span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="js/jquery-2.1.1.min.js"></script>
+<script src="js/vue.min.js"></script>
+
+<script src="js/common.js"></script>
+<script type="text/javascript">
+    var param = app.getQueryString();
+    let appId = param.id
+    var vue = new Vue({
+        el: '#app',
+        data: {
+            list: [],
+            imgUrl: "images/timg.jpg",
+            username: ''
+        },
+        mounted() {
+            let _this = this
+            let user = app.getData("user")
+            if (!user) {
+                window.location.href = "login1.html"
+            } else {
+                _this.username = JSON.parse(user).username
+            }
+        },
+        created() {
+            this.loadData()
+        },
+        methods: {
+            logout() {
+                localStorage.clear()
+                window.location.reload()
+            },
+            loadData() {
+                let _this = this
+                $.get(app.serverUrl + "/comment/getByAppId", {appId: appId}, function (res) {
+                    _this.list = res.data;
+                    $.each(_this.list, function (index, val) {
+                        if (index % 2 == 0) {
+                            val.animate = "animated bounceInLeft";
+                        } else {
+                            val.animate = "animated bounceInRight";
+                        }
+                    })
+                })
+            },
+            openComment() {
+                window.location.href = "pingjia/index.html?appId=" + appId
+            },
+            goLogin() {
+                window.location.href = "login1.html"
+            },
+            goRegister() {
+                window.location.href = "register.html"
+            }
+        }
+    })
+</script>
+
+<script type="text/javascript">
+    $('#m-return').on('click', function () {
+        window.history.back()
+    });
+    var myCoupons = $('#m-my-coupons');
+    var myInvite = $('#m-my-invite');
+    var view1 = $('#m-view1');
+    var view2 = $('#m-view2');
+    $('#m-return').on('click', function () {
+        window.history.back()
+    });
+    myInvite.on('click', function () {
+        myCoupons.removeClass('active');
+        myInvite.addClass('active');
+        view2.hide();
+        view1.show();
+    });
+    myCoupons.on('click', function () {
+        myInvite.removeClass('active');
+        myCoupons.addClass('active');
+        view1.hide();
+        view2.show();
+    });
+</script>
+</body>
+</html>
